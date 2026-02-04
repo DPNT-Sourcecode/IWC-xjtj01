@@ -48,6 +48,7 @@ REGISTERED_PROVIDERS: list[Provider] = [
 ]
 
 class Queue:
+    _task_counter = 0
     def __init__(self):
         self._queue = []
 
@@ -77,6 +78,12 @@ class Queue:
             return Priority.NORMAL
 
     @staticmethod
+    def _task_number(task):
+        metadata = task.metadata
+        task_number = metadata.get("task_number")
+        return -1 * task_number
+
+    @staticmethod
     def _earliest_group_timestamp_for_task(task):
         metadata = task.metadata
         return metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
@@ -97,6 +104,8 @@ class Queue:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+            metadata.setdefault("task_number", self._task_counter)
+            self._task_counter = self._task_counter + 1
             self._queue.append(task)
 
         sorted_queue = sorted(self._queue, key=lambda t: self._timestamp_for_task(t))
@@ -169,7 +178,8 @@ class Queue:
             self._timestamp_for_task(t),
         ))[0]
         task_matching_req = sorted([t for t in self._queue if t.timestamp == oldest_task.timestamp],
-            key=sort_key)
+            key=self._task_number)
+        print(task_matching_req)
         if oldest_task.provider == 'bank_statements' and self.age >= 300:
             bs_task = self._queue.pop(self._queue.index(oldest_task))
             return TaskDispatch(
@@ -284,3 +294,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
