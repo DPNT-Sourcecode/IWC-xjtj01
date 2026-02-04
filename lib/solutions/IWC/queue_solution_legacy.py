@@ -93,6 +93,9 @@ class Queue:
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
+        sorted_tasks = sorted(tasks, key=lambda t: t.timestamp)
+        breakpoint()
+
         is_duplicate = len([t for t in self._queue if t.provider == item.provider and t.user_id == item.user_id]) >= 1
         if is_duplicate:
             return self.size
@@ -254,5 +257,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
