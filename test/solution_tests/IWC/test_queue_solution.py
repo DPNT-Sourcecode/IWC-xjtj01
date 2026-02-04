@@ -126,7 +126,3 @@ def test_bank_statement_skip_5() -> None:
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("id_verification", 6),
     ])
-
-
-
-
