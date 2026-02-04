@@ -164,7 +164,9 @@ class Queue:
         )
 
         # if bank statement is oldest AND age is above or equal to 5
-        oldest_task = sorted(self._queue, key= lambda t: self._timestamp_for_task(t))[0]
+        oldest_task = sorted(self._queue, key= lambda t: (
+            self._timestamp_for_task(t),
+        ))[0]
         if oldest_task.provider == 'bank_statements' and self.age >= 300:
             bs_task = self._queue.pop(self._queue.index(oldest_task))
             return TaskDispatch(
@@ -279,6 +281,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
