@@ -163,7 +163,8 @@ class Queue:
             )
         )
 
-        
+        if bank statement is oldest AND age is above or equal to 5
+
         task = self._queue.pop(0)
         return TaskDispatch(
             provider=task.provider,
@@ -271,3 +272,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
