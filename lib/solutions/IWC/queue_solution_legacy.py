@@ -158,6 +158,7 @@ class Queue:
             key=lambda i: (
                 self._priority_for_task(i),
                 self._earliest_group_timestamp_for_task(i),
+                self._is_bank_statement(i),
                 self._timestamp_for_task(i),
             )
         )
@@ -167,6 +168,11 @@ class Queue:
             provider=task.provider,
             user_id=task.user_id,
         )
+
+    def _is_bank_statement(self, task):
+        if task.provider == "bank_statements":
+            return 1
+        return 0
 
     @property
     def size(self):
@@ -263,8 +269,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
-
