@@ -113,26 +113,31 @@ class Queue:
         for user_id in user_ids:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
+            # Get task count per user and their earliest task
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
 
         for task in self._queue:
             metadata = task.metadata
+
+            # Check if this task has an earlist timestamp based on group
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
             raw_priority = metadata.get("priority")
+
             try:
                 priority_level = Priority(raw_priority)
             except (TypeError, ValueError):
                 priority_level = None
 
             if priority_level is None or priority_level == Priority.NORMAL:
-                metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
                     metadata["priority"] = Priority.HIGH
                 else:
+                    metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                     metadata["priority"] = Priority.NORMAL
             else:
+                # Maintain the current timestamp set by a group
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
@@ -245,4 +250,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-

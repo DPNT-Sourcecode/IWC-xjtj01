@@ -36,5 +36,3 @@ def test_dependency_resolution() -> None:
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("credit_check", 1),
     ])
-
-
