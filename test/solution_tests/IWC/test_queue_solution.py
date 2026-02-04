@@ -81,3 +81,14 @@ def test_age() -> None:
         call_dequeue().expect("bank_statements", 1),
     ])
 
+
+def test_bank_statement_skip() -> None:
+    run_queue([
+        call_enqueue(provider="id_verification", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue(provider="bank_statements", user_id=2, timestamp=iso_ts(delta_minutes=1)).expect(2),
+        call_enqueue(provider="companies_house", user_id=3, timestamp=iso_ts(delta_minutes=7)).expect(3),
+        call_dequeue().expect("id_verification", 1),
+        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("companies_house", 3),
+    ])
+
