@@ -93,6 +93,8 @@ class Queue:
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
+        is_duplicate = len([t for t in self._queue if t['provider'] == item['provider'] and t['user_id'] == item['user_id']]) >= 1
+
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
@@ -250,3 +252,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
