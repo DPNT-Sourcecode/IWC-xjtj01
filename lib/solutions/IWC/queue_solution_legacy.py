@@ -166,15 +166,6 @@ class Queue:
         def _priority_user_id(t):
             return -1 * t.user_id
 
-        sort_key = lambda i: (
-                self._priority_for_task(i),
-                self._earliest_group_timestamp_for_task(i),
-                self._is_bank_statement(i),
-                self._timestamp_for_task(i),
-            )
-        self._queue.sort(
-            key=sort_key
-        )
 
 
         # if bank statement is oldest AND age is above or equal to 5
@@ -190,6 +181,16 @@ class Queue:
                 provider=bs_task.provider,
                 user_id=bs_task.user_id,
             )
+
+        sort_key = lambda i: (
+                self._priority_for_task(i),
+                self._earliest_group_timestamp_for_task(i),
+                self._is_bank_statement(i),
+                self._timestamp_for_task(i),
+            )
+        self._queue.sort(
+            key=sort_key
+        )
 
         task = self._queue.pop(0)
         return TaskDispatch(
@@ -298,6 +299,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
