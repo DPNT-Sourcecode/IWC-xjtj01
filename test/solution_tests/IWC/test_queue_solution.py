@@ -10,7 +10,7 @@ def test_enqueue_size_dequeue_flow() -> None:
         call_dequeue().expect("companies_house", 1),
     ])
 
-def test_enque_rule_of_3() -> None:
+def test_rule_of_3() -> None:
     run_queue([
         call_enqueue(provider="companies_house", user_id=2, timestamp=iso_ts(delta_minutes=0)).expect(1),
         call_enqueue(provider="companies_house", user_id=1, timestamp=iso_ts(delta_minutes=1)).expect(2),
@@ -19,4 +19,22 @@ def test_enque_rule_of_3() -> None:
         call_size().expect(4),
         call_dequeue().expect("companies_house", 1),
     ])
+
+def test_timestamp_ordering() -> None:
+    run_queue([
+        call_enqueue(provider="companies_house", user_id=1, timestamp=iso_ts(delta_minutes=2)).expect(1),
+        call_enqueue(provider="id_provider", user_id=1, timestamp=iso_ts(delta_minutes=1)).expect(2),
+        call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(3),
+        call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("id_provider", 1),
+        call_dequeue().expect("companies_house", 1),
+    ])
+
+def test_dependency_resolution() -> None:
+    run_queue([
+        call_enqueue(provider="credit_check", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(2),
+        call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("credit_check", 1),
+    ])
+
 
