@@ -93,26 +93,24 @@ class Queue:
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
-        sorted_tasks = sorted(tasks, key=lambda t: self._timestamp_for_task(t))
-        task_hash = []
-        _new_tasks = []
-        for t in sorted_tasks:
-            hash = f"{t.provider}__{t.user_id}"
-            print(hash)
-            if hash in task_hash:
-                continue
-            task_hash.append(hash)
-            _new_tasks.append(t)
-        
-        print(tasks)
-        tasks = _new_tasks
-        print(tasks)
-
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
             self._queue.append(task)
+
+        sorted_queue = sorted(self._queue, key=lambda t: self._timestamp_for_task(t))
+        task_hash = []
+        _new_queue = []
+        for t in sorted_queue:
+            hash = f"{t.provider}__{t.user_id}"
+            if hash in task_hash:
+                continue
+            task_hash.append(hash)
+            _new_queue.append(t)
+
+        self._queue = _new_queue
+
         return self.size
 
     def dequeue(self):
@@ -265,6 +263,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
