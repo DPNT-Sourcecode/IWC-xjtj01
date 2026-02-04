@@ -81,7 +81,7 @@ class Queue:
     def _task_number(task):
         metadata = task.metadata
         task_number = metadata.get("task_number")
-        return -1 * task_number
+        return task_number
 
     @staticmethod
     def _earliest_group_timestamp_for_task(task):
@@ -177,9 +177,10 @@ class Queue:
         oldest_task = sorted(self._queue, key= lambda t: (
             self._timestamp_for_task(t),
         ))[0]
-        task_matching_req = sorted([t for t in self._queue if t.timestamp == oldest_task.timestamp],
-            key=self._task_number)[0]
-        print(task_matching_req)
+        task_matching_req_list = sorted([t for t in self._queue if t.timestamp == oldest_task.timestamp],
+            key=self._task_number)
+        print(task_matching_req_list)
+        task_matching_req = task_matching_req_list[0]
         if task_matching_req.provider == 'bank_statements' and self.age >= 300:
             bs_task = self._queue.pop(self._queue.index(task_matching_req))
             return TaskDispatch(
@@ -294,5 +295,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
