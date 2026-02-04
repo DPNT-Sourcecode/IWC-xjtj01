@@ -164,6 +164,7 @@ class Queue:
         )
 
         print(self.age)
+        breakpoint()
         task = self._queue.pop(0)
         return TaskDispatch(
             provider=task.provider,
@@ -182,7 +183,7 @@ class Queue:
     @property
     def age(self):
         sorted_queue = sorted(self._queue, key=lambda t: self._timestamp_for_task(t))
-        return (sorted_queue[-1].timestamp - sorted_queue[0].timestamp).total_seconds()
+        return int((datetime.fromisoformat(sorted_queue[-1].timestamp) - datetime.fromisoformat(sorted_queue[0].timestamp)).total_seconds())
 
     def purge(self):
         self._queue.clear()
@@ -271,4 +272,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
