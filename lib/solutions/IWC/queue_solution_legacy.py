@@ -93,9 +93,6 @@ class Queue:
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
-        sorted_tasks = sorted(tasks, key=lambda t: t.timestamp)
-        breakpoint()
-
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
@@ -253,3 +250,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+

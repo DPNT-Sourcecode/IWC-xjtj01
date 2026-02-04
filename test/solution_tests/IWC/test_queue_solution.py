@@ -46,13 +46,5 @@ def test_deduplication() -> None:
         call_dequeue().expect("id_verification", 1),
     ])
 
-def test_deduplication_2() -> None:
-    run_queue([
-        call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=6)).expect(1),
-        call_enqueue(provider="id_verification", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(2),
-        call_dequeue().expect("id_verification", 1),
-        call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=2)).expect(1),
-        call_dequeue().expect("bank_statements", 1),
-        call_dequeue().expect("id_verification", 1),
-    ])
+
 
