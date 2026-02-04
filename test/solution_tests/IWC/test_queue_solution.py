@@ -52,10 +52,12 @@ def test_bank_statements_with_rule_of_3() -> None:
         call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(1),
         call_enqueue(provider="id_verification", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(2),
         call_enqueue(provider="companies_house", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(3),
-        call_enqueue(provider="bank_statements", user_id=2, timestamp=iso_ts(delta_minutes=2)).expect(4),
+        call_enqueue(provider="id_verification", user_id=2, timestamp=iso_ts(delta_minutes=2)).expect(4),
+        call_enqueue(provider="bank_statements", user_id=2, timestamp=iso_ts(delta_minutes=2)).expect(5),
         call_dequeue().expect("id_verification", 1),
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("id_verification", 2),
         call_dequeue().expect("bank_statements", 2),
     ])
 
@@ -64,9 +66,10 @@ def test_bank_statements_without_rule_of_3() -> None:
     run_queue([
         call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(1),
         call_enqueue(provider="id_verification", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(2),
-        call_enqueue(provider="companies_house", user_id=2, timestamp=iso_ts(delta_minutes=5)).expect(3),
+        call_enqueue(provider="companies_house", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(3),
         call_dequeue().expect("id_verification", 1),
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("bank_statements", 1),
     ])
+
 
