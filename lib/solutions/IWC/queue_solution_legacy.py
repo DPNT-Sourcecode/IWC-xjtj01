@@ -163,7 +163,11 @@ class Queue:
             )
         )
 
-        if bank statement is oldest AND age is above or equal to 5
+        # if bank statement is oldest AND age is above or equal to 5
+        oldest_tasks = sorted(self._queue, key= lambda t: MAX_TIMESTAMP-self._timestamp_for_task(t))[0]
+        print(oldest_tasks)
+        for (index, task) in enumerate(self._queue):
+            pass
 
         task = self._queue.pop(0)
         return TaskDispatch(
@@ -272,4 +276,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
