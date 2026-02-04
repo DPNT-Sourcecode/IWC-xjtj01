@@ -73,3 +73,11 @@ def test_bank_statements_without_rule_of_3() -> None:
     ])
 
 
+def test_age() -> None:
+    run_queue([
+        call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue(provider="id_verification", user_id=1, timestamp=iso_ts(delta_minutes=5)).expect(2),
+    ])
+
+
+
