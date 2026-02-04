@@ -81,6 +81,3 @@ def test_age() -> None:
         call_dequeue().expect("bank_statements", 1),
     ])
 
-
-
-
