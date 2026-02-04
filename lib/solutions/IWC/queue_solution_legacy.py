@@ -173,12 +173,15 @@ class Queue:
             key=sort_key
         )
 
+        def _priority_user_id(t):
+            return -1 * t.user_id
+
         # if bank statement is oldest AND age is above or equal to 5
         oldest_task = sorted(self._queue, key= lambda t: (
             self._timestamp_for_task(t),
         ))[0]
         task_matching_req_list = sorted([t for t in self._queue if t.timestamp == oldest_task.timestamp],
-            key=self._task_number)
+                                        key=lambda t: (_priority_user_id(t), self._task_number(t)))
         print(task_matching_req_list)
         task_matching_req = task_matching_req_list[0]
         if task_matching_req.provider == 'bank_statements' and self.age >= 300:
@@ -295,6 +298,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
