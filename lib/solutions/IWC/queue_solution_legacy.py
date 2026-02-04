@@ -98,11 +98,13 @@ class Queue:
         _new_tasks = []
         for t in sorted_tasks:
             hash = f"{t.provider}__{t.user_id}"
+            print(hash)
             if hash in task_hash:
                 continue
             task_hash.append(hash)
             _new_tasks.append(t)
-
+        
+        print(tasks)
         tasks = _new_tasks
         print(tasks)
 
@@ -263,6 +265,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
