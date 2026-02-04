@@ -96,10 +96,6 @@ class Queue:
         sorted_tasks = sorted(tasks, key=lambda t: t.timestamp)
         breakpoint()
 
-        is_duplicate = len([t for t in self._queue if t.provider == item.provider and t.user_id == item.user_id]) >= 1
-        if is_duplicate:
-            return self.size
-
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
@@ -257,6 +253,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
