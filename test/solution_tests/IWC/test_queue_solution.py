@@ -117,3 +117,16 @@ def test_bank_statement_skip_4() -> None:
     ])
 
 
+def test_bank_statement_skip_4() -> None:
+    run_queue([
+        call_enqueue(provider="bank_statements", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue(provider="companies_house", user_id=1, timestamp=iso_ts(delta_minutes=0)).expect(2),
+        call_enqueue(provider="id_verification", user_id=6, timestamp=iso_ts(delta_minutes=6)).expect(3),
+        call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("companies_house", 3),
+        call_dequeue().expect("id_verification", 3),
+    ])
+id = IWC_R5_S5_001, req = enqueue({"provider":"companies_house","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 1
+id = IWC_R5_S5_002, req = enqueue({"provider":"bank_statements","timestamp":"2025-10-20 12:00:00","user_id":1}), resp = 2
+id = IWC_R5_S5_003, req = enqueue({"provider":"id_verification","timestamp":"2025-10-20 12:06:00","user_id":6}), resp = 3
