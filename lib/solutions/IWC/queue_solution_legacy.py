@@ -163,6 +163,9 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
+        def _priority_user_id(t):
+            return -1 * t.user_id
+
         sort_key = lambda i: (
                 self._priority_for_task(i),
                 self._earliest_group_timestamp_for_task(i),
@@ -173,8 +176,6 @@ class Queue:
             key=sort_key
         )
 
-        def _priority_user_id(t):
-            return -1 * t.user_id
 
         # if bank statement is oldest AND age is above or equal to 5
         # Not clear what to prioritise
@@ -297,6 +298,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
